@@ -25,7 +25,6 @@
         </ui:TitleBar>
 
         <ui:NavigationView x:Name="RootNavigation" Grid.Row="1" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed">
-
             <ui:NavigationView.MenuItems>
                 <ui:NavigationViewItem Content="ホーム" Icon="{ui:SymbolIcon Home24}" TargetPageType="{x:Type pages:Pattern1Page}" />
             </ui:NavigationView.MenuItems>
@@ -34,10 +33,11 @@
                 <ui:NavigationViewItem Content="設定" Icon="{ui:SymbolIcon Settings24}" TargetPageType="{x:Type pages:SettingsPage}" />
             </ui:NavigationView.FooterMenuItems>
 
-            <ui:NavigationView.Content>
-                <Frame x:Name="RootFrame" NavigationUIVisibility="Hidden"/>
-            </ui:NavigationView.Content>
-
+            <ui:NavigationView.ContentOverlay>
+                <Grid>
+                    <Frame x:Name="RootFrame" NavigationUIVisibility="Hidden"/>
+                </Grid>
+            </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>
     </Grid>
 </ui:FluentWindow>

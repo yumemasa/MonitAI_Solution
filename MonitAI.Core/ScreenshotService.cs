@@ -48,7 +48,7 @@ namespace MonitAI.Core
             return savedPaths;
         }
 
-        private string CaptureScreen(Screen screen, int screenIndex, string timestamp, string saveFolder)
+        public string CaptureScreen(Screen screen, int screenIndex, string timestamp, string saveFolder)
         {
             var bounds = screen.Bounds;
 

@@ -1,0 +1,5 @@
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.Agent\obj\Debug\net8.0-windows\MonitAI.Agent.csproj.AssemblyReference.cache
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.Agent\obj\Debug\net8.0-windows\MainWindow.g.cs
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.Agent\obj\Debug\net8.0-windows\App.g.cs
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.Agent\obj\Debug\net8.0-windows\MonitAI.Agent_MarkupCompile.cache
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.Agent\obj\Debug\net8.0-windows\MonitAI.Agent_MarkupCompile.lref

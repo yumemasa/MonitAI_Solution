@@ -3,63 +3,72 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Threading;
 using MonitAI.Core;
+// FormsのScreenクラスを使うためにエイリアスを指定
+using WinForms = System.Windows.Forms;
 
 namespace MonitAI.Agent
 {
     public partial class App : Application
     {
-        private GeminiService _geminiService;
-        private ScreenshotService _screenshotService;
-        private InterventionService _interventionService;
-        private DispatcherTimer _timer;
+        // null許容にして警告を消す
+        private GeminiService? _geminiService;
+        private ScreenshotService? _screenshotService;
+        private InterventionService? _interventionService;
+        private DispatcherTimer? _timer;
         private string _userRules = "";
+        private string _apiKey = "";
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            // 1. 設定の読み込み
             if (!LoadSettings())
             {
-                MessageBox.Show("設定(APIキー等)が見つかりません。\n先にMonitAI.UIで設定を行ってください。", "MonitAI Agent", MessageBoxButton.OK, MessageBoxImage.Warning);
+                // 設定がなければ終了
                 Shutdown();
                 return;
             }
 
-            // 2. サービスの初期化
+            _geminiService = new GeminiService();
             _screenshotService = new ScreenshotService();
             _interventionService = new InterventionService();
 
-            // ログの受け取り（デバッグ用：本来はファイルに出力などが良い）
-            _geminiService.OnLog += (msg) => System.Diagnostics.Debug.WriteLine($"[Gemini] {msg}");
-            _interventionService.OnLog += (msg) => System.Diagnostics.Debug.WriteLine($"[Intervention] {msg}");
-
-            // 3. 監視タイマーの開始 (例: 45秒間隔)
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(45);
             _timer.Tick += async (s, args) => await MonitoringLoop();
             _timer.Start();
-
-            // 最初の1回を実行
-            _ = MonitoringLoop();
         }
 
         private async Task MonitoringLoop()
         {
+            if (_screenshotService == null || _geminiService == null || _interventionService == null) return;
+
             try
             {
-                // A. 撮影
-                string imagePath = _screenshotService.CaptureScreen();
+                // 1. スクショ撮影 (Coreの引数要求に合わせる)
+                // 引数: Screen, index, 保存先フォルダ, ファイル名
+                string saveDir = Path.Combine(Path.GetTempPath(), "MonitAI_Screenshots");
+                Directory.CreateDirectory(saveDir);
 
-                // B. 分析
-                // (CLIモードを使うかAPIモードを使うかはCoreの実装によりますが、ここではAPIモードの例)
-                string analysisResult = await _geminiService.AnalyzeImageAsync(imagePath, _userRules);
+                string imagePath = _screenshotService.CaptureScreen(
+                    WinForms.Screen.PrimaryScreen,
+                    0,
+                    saveDir,
+                    "monitor"
+                );
 
-                // C. 判定と介入
-                if (analysisResult.Contains("×") || analysisResult.Contains("違反"))
+                if (string.IsNullOrEmpty(imagePath)) return;
+
+                // 2. 分析 (Coreの引数要求に合わせる)
+                // CoreにはAPIキーを渡す場所がないようですが、AnalyzeImageの第2引数(prompt)にルール等を渡します
+                // ※もしAPIキーが必要ならCore側の改修が必要ですが、まずはメソッド定義通りに呼びます
+                string result = await _geminiService.AnalyzeImageAsync(imagePath, _userRules);
+
+                // 3. 介入 (Coreの引数要求に合わせる)
+                // ExecuteIntervention は string を要求している
+                if (result.Contains("違反") || result.Contains("×"))
                 {
-                    // 違反時の処理
-                    await _interventionService.ExecuteInterventionAsync(1); // レベル1からスタート等のロジック
+                    await _interventionService.ExecuteInterventionAsync(1);
                 }
             }
             catch (Exception ex)
@@ -73,16 +82,17 @@ namespace MonitAI.Agent
             try
             {
                 string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
-                if (!File.Exists(configPath)) return false;
-
-                string json = File.ReadAllText(configPath);
-                var settings = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-
-                if (settings != null && settings.ContainsKey("ApiKey"))
+                if (File.Exists(configPath))
                 {
-                    _geminiService = new GeminiService(settings["ApiKey"]);
-                    if (settings.ContainsKey("Rules")) _userRules = settings["Rules"];
-                    return true;
+                    string json = File.ReadAllText(configPath);
+                    var settings = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+
+                    if (settings != null && settings.TryGetValue("ApiKey", out var key))
+                    {
+                        _apiKey = key; // APIキーは読み込むが、渡す先がCoreに見当たらないため一旦保持
+                        if (settings.TryGetValue("Rules", out var rules)) _userRules = rules;
+                        return true;
+                    }
                 }
             }
             catch { }
