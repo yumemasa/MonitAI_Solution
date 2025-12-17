@@ -39,3 +39,9 @@ C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\obj\Debug\net8.0-wind
 C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\obj\Debug\net8.0-windows\Pages\HomePage.g.cs
 C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\obj\Debug\net8.0-windows\Pages\Pattern1Page.g.cs
 C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\bin\Debug\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\bin\Debug\net8.0-windows\System.Drawing.Common.dll
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\bin\Debug\net8.0-windows\System.Private.Windows.Core.dll
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\bin\Debug\net8.0-windows\System.Private.Windows.GdiPlus.dll
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\obj\Debug\net8.0-windows\Pages\HomePage.baml

@@ -1,8 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using MonitAI.Core; // Coreを使う
+using System.Windows.Media;
+using MonitAI.Core; // Coreを参照
 
 namespace MonitAI.UI.Pages
 {
@@ -18,26 +22,51 @@ namespace MonitAI.UI.Pages
 
         private void SaveApiKey_Click(object sender, RoutedEventArgs e)
         {
-            // 既存の設定を読み込んで、APIキーだけ更新する
-            var settings = LoadSettingsFromFile();
-            settings["ApiKey"] = ApiKeyBox.Password;
+            try
+            {
+                var settings = LoadSettingsFromFile();
+                settings["ApiKey"] = ApiKeyBox.Password;
 
-            string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(ConfigPath, json);
+                string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(ConfigPath, json);
 
-            MessageBox.Show("APIキーを保存しました。", "保存完了", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("APIキーを保存しました。\nAgentを再起動すると反映されます。", "保存完了", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"保存に失敗しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private async void TestCli_Click(object sender, RoutedEventArgs e)
         {
             CliStatusText.Text = "⏳ テスト中...";
-            // CoreにあるGeminiServiceを使ってテスト
-            var service = new GeminiService(ApiKeyBox.Password);
-            // ※注意: CLIのパスが正しいか確認が必要です。今回は簡易的な導通確認として実装します。
+            CliStatusText.Foreground = Brushes.Gray;
 
-            // 本来はここで実際にCLIを叩く処理を呼びますが、まずは「保存されたか」の確認のみにします
-            await Task.Delay(500); // 演出
-            CliStatusText.Text = "✅ 設定ファイルは正常に作成されています。\nAgent起動時にこの設定が読み込まれます。";
+            try
+            {
+                // ★修正箇所: 引数なしで初期化する
+                var service = new GeminiService();
+
+                // Coreに実装されている接続確認メソッドを呼ぶ
+                bool isConnected = await service.CheckCliConnectionAsync();
+
+                if (isConnected)
+                {
+                    CliStatusText.Text = "✅ Gemini CLI (gemini command) は正常に動作しています。";
+                    CliStatusText.Foreground = Brushes.Green;
+                }
+                else
+                {
+                    CliStatusText.Text = "❌ Gemini CLI が見つかりません。\nPATHに 'gemini' が通っているか、Python環境を確認してください。";
+                    CliStatusText.Foreground = Brushes.Red;
+                }
+            }
+            catch (Exception ex)
+            {
+                CliStatusText.Text = $"❌ エラー: {ex.Message}";
+                CliStatusText.Foreground = Brushes.Red;
+            }
         }
 
         private Dictionary<string, string> LoadSettingsFromFile()
