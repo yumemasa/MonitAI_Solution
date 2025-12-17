@@ -4,6 +4,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:pages="clr-namespace:MonitAI.UI.Pages" 
     mc:Ignorable="d"
     Title="monitAI" Height="750" Width="1000"
     WindowStartupLocation="CenterScreen"
@@ -17,251 +18,26 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- 1. タイトルバー -->
         <ui:TitleBar Grid.Row="0" Title="monitAI">
             <ui:TitleBar.TrailingContent>
-                <ui:Button Icon="{ui:SymbolIcon DarkTheme24}" 
-                           Click="OnToggleThemeClick" 
-                           Appearance="Transparent" 
-                           ToolTip="テーマ切り替え" 
-                           Margin="0,0,10,0"/>
+                <ui:Button Icon="{ui:SymbolIcon DarkTheme24}" Click="OnToggleThemeClick" Appearance="Transparent" Margin="0,0,10,0"/>
             </ui:TitleBar.TrailingContent>
         </ui:TitleBar>
 
-        <!-- 2. ナビゲーション -->
         <ui:NavigationView x:Name="RootNavigation" Grid.Row="1" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed">
+
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="新規作成" Icon="{ui:SymbolIcon Add24}" />
-                <ui:NavigationViewItem Content="設定" Icon="{ui:SymbolIcon Settings24}" IsEnabled="False" />
+                <ui:NavigationViewItem Content="ホーム" Icon="{ui:SymbolIcon Home24}" TargetPageType="{x:Type pages:Pattern1Page}" />
             </ui:NavigationView.MenuItems>
 
-            <ui:NavigationView.ContentOverlay>
-                <Grid Margin="24">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="340"/>
-                    </Grid.ColumnDefinitions>
+            <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem Content="設定" Icon="{ui:SymbolIcon Settings24}" TargetPageType="{x:Type pages:SettingsPage}" />
+            </ui:NavigationView.FooterMenuItems>
 
-                    <!-- 左側: 入力フォーム -->
-                    <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="0,0,40,0">
-                        <TextBlock Text="集中セッションを開始" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <ui:NavigationView.Content>
+                <Frame x:Name="RootFrame" NavigationUIVisibility="Hidden"/>
+            </ui:NavigationView.Content>
 
-                        <!-- 作業ルール設定 -->
-                        <ui:CardControl Icon="{ui:SymbolIcon Edit24}" Header="作業ルール設定" Margin="0,0,0,20">
-                            <StackPanel Width="320">
-                                <!-- 目標入力 (必須) -->
-                                <StackPanel Margin="0,0,0,20">
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                        <TextBlock Text="達成する目標 (Do)" FontWeight="Bold" 
-                                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" 
-                                                   VerticalAlignment="Center"/>
-                                        <Border Background="#D13438" CornerRadius="4" Margin="10,0,0,0" Padding="6,2">
-                                            <TextBlock Text="必須" FontSize="10" FontWeight="Bold" Foreground="White"/>
-                                        </Border>
-                                    </StackPanel>
-                                    <ui:TextBox x:Name="GoalInput" 
-                                                PlaceholderText="例: 数学のレポート作成&#x0a;英単語50個暗記" 
-                                                AcceptsReturn="True" TextWrapping="Wrap" Height="60" VerticalContentAlignment="Top"/>
-                                </StackPanel>
-
-                                <!-- NG入力 (任意) -->
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                        <TextBlock Text="禁止事項 (Don't)" FontWeight="SemiBold" 
-                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                   VerticalAlignment="Center"/>
-                                        <Border Background="{DynamicResource ControlFillColorSecondaryBrush}" CornerRadius="4" Margin="10,0,0,0" Padding="6,2">
-                                            <TextBlock Text="任意" FontSize="10" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                                        </Border>
-                                    </StackPanel>
-                                    <ui:TextBox x:Name="NgInput" PlaceholderText="例: YouTube, SNS" />
-                                </StackPanel>
-                            </StackPanel>
-                        </ui:CardControl>
-
-                        <!-- 時間設定 -->
-                        <ui:CardControl Icon="{ui:SymbolIcon Timer24}" Header="時間設定">
-                            <StackPanel Width="320">
-                                <Grid Margin="0,0,0,15">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Bottom">
-                                        <TextBlock x:Name="TimeDisplay" Text="45" FontSize="48" FontWeight="Bold" 
-                                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" LineHeight="48"/>
-                                        <TextBlock Text="min" FontSize="16" FontWeight="SemiBold" Margin="4,0,0,8" VerticalAlignment="Bottom" 
-                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Orientation="Horizontal">
-                                        <ui:SymbolIcon Symbol="Clock24" FontSize="14" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
-                                        <TextBlock x:Name="EndTimeText" Text="End --:--" FontSize="14" FontWeight="SemiBold" 
-                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                                    </StackPanel>
-                                </Grid>
-
-                                <Slider x:Name="TimeSlider" Minimum="5" Maximum="180" Value="45" 
-                                        TickFrequency="5" IsSnapToTickEnabled="True"
-                                        ValueChanged="OnTimeSliderChanged" Margin="0,0,0,15"/>
-
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <ui:Button Grid.Column="0" Content="25分" Margin="0,0,4,0" Appearance="Secondary" HorizontalAlignment="Stretch" Click="OnPresetTimeClick" Tag="25"/>
-                                    <ui:Button Grid.Column="1" Content="45分" Margin="2,0,2,0" Appearance="Secondary" HorizontalAlignment="Stretch" Click="OnPresetTimeClick" Tag="45"/>
-                                    <ui:Button Grid.Column="2" Content="60分" Margin="2,0,2,0" Appearance="Secondary" HorizontalAlignment="Stretch" Click="OnPresetTimeClick" Tag="60"/>
-                                    <ui:Button Grid.Column="3" Content="90分" Margin="4,0,0,0" Appearance="Secondary" HorizontalAlignment="Stretch" Click="OnPresetTimeClick" Tag="90"/>
-                                </Grid>
-                            </StackPanel>
-                        </ui:CardControl>
-
-                        <!-- 開始ボタン -->
-                        <ui:Button Content="集中を開始 (Start)" Icon="{ui:SymbolIcon Play24}" 
-                                   Appearance="Primary" Height="50" HorizontalAlignment="Stretch"
-                                   Click="OnStartClick" Margin="0,25,0,0" FontSize="16" FontWeight="SemiBold"/>
-
-                        <!-- Undo 通知バー -->
-                        <Border x:Name="UndoBar" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}" 
-                                BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1"
-                                CornerRadius="4" Padding="12,8" Margin="0,20,0,0" Visibility="Collapsed">
-                            <Grid>
-                                <TextBlock Text="設定を反映しました。" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
-                                <ui:Button Content="元に戻す" Appearance="Transparent" Foreground="{DynamicResource SystemAccentColorBrush}" 
-                                           HorizontalAlignment="Right" Click="OnUndoClick" FontWeight="Bold" Padding="0"/>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
-
-                    <!-- 右側: クイックアクセスパネル -->
-                    <Grid Grid.Column="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <!-- 1. お気に入り (Favorites) -->
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-                            <ui:SymbolIcon Symbol="Star24" Foreground="#FACD15" Margin="0,0,8,0"/>
-                            <TextBlock Text="よく使うセット (Favorites)" FontWeight="Bold" FontSize="16"/>
-                        </StackPanel>
-
-                        <ItemsControl x:Name="FavoritesList" Grid.Row="1">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <!-- Gridで重ねる -->
-                                    <Grid Margin="0,0,0,8">
-                                        <!-- 下層: カード全体 -->
-                                        <!-- 右側に余白(Padding 40)を確保 -->
-                                        <ui:Button HorizontalAlignment="Stretch" Height="Auto" 
-                                                   Appearance="Secondary" Click="OnQuickItemClick" Tag="{Binding}"
-                                                   ToolTip="{Binding Title}" 
-                                                   HorizontalContentAlignment="Stretch"
-                                                   Padding="12,8,40,8">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <!-- 時間 -->
-                                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0" MinWidth="45">
-                                                    <TextBlock Text="{Binding Minutes}" FontSize="18" FontWeight="Bold" 
-                                                               Foreground="{DynamicResource SystemControlHighlightAccentBrush}" 
-                                                               HorizontalAlignment="Center"/>
-                                                    <TextBlock Text="min" FontSize="10" Foreground="{DynamicResource TextFillColorTertiaryBrush}" 
-                                                               HorizontalAlignment="Center"/>
-                                                </StackPanel>
-                                                <!-- 内容 -->
-                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" 
-                                                               TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}"/>
-                                                    <TextBlock Text="{Binding NgText, StringFormat='NG: {0}'}" FontSize="11" 
-                                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" 
-                                                               TextTrimming="CharacterEllipsis" ToolTip="{Binding NgText}"/>
-                                                </StackPanel>
-                                            </Grid>
-                                        </ui:Button>
-
-                                        <!-- 上層: ピン留め解除ボタン (右上・斜線付きピン・アクセントカラー) -->
-                                        <ui:Button Icon="{ui:SymbolIcon PinOff24}" Appearance="Transparent" 
-                                                   Click="OnUnpinClick" Tag="{Binding}" 
-                                                   Width="32" Height="32"
-                                                   VerticalAlignment="Top" HorizontalAlignment="Right"
-                                                   Margin="0,2,2,0" 
-                                                   Foreground="{DynamicResource SystemControlHighlightAccentBrush}"
-                                                   ToolTip="お気に入り解除 (履歴に戻す)"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                        <Separator Grid.Row="2" Margin="0,20"/>
-
-                        <!-- 2. 履歴 (History) -->
-                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,10">
-                            <ui:SymbolIcon Symbol="History24" Margin="0,0,8,0"/>
-                            <TextBlock Text="最近の履歴 (History)" FontWeight="Bold" FontSize="16"/>
-                        </StackPanel>
-
-                        <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto">
-                            <ItemsControl x:Name="HistoryList">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,0,0,8">
-                                            <!-- 下層: カード全体 -->
-                                            <!-- 右側に余白(Padding 40)を確保 -->
-                                            <ui:Button HorizontalAlignment="Stretch" Height="Auto" 
-                                                       Appearance="Secondary" Click="OnQuickItemClick" Tag="{Binding}"
-                                                       ToolTip="{Binding Title}" 
-                                                       HorizontalContentAlignment="Stretch"
-                                                       Padding="12,8,40,8">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <!-- 時間 & 日時 -->
-                                                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0" MinWidth="45">
-                                                        <TextBlock Text="{Binding Minutes, StringFormat='{}{0}m'}" FontSize="16" FontWeight="Bold" 
-                                                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" 
-                                                                   HorizontalAlignment="Center"/>
-                                                        <TextBlock Text="{Binding Timestamp}" FontSize="10" 
-                                                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" 
-                                                                   HorizontalAlignment="Center" TextWrapping="Wrap" MaxWidth="50" TextAlignment="Center"/>
-                                                    </StackPanel>
-                                                    <!-- 内容 -->
-                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" 
-                                                                   TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}"/>
-                                                        <TextBlock Text="{Binding NgText, StringFormat='NG: {0}'}" FontSize="11" 
-                                                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" 
-                                                                   TextTrimming="CharacterEllipsis" ToolTip="{Binding NgText}"/>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </ui:Button>
-
-                                            <!-- 上層: ピン留め登録ボタン (右上・通常ピン・グレー) -->
-                                            <ui:Button Icon="{ui:SymbolIcon Pin24}" Appearance="Transparent" 
-                                                       Click="OnPinClick" Tag="{Binding}" 
-                                                       Width="32" Height="32"
-                                                       VerticalAlignment="Top" HorizontalAlignment="Right"
-                                                       Margin="0,2,2,0"
-                                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                                       ToolTip="お気に入りに追加"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </Grid>
-                </Grid>
-            </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>
     </Grid>
 </ui:FluentWindow>

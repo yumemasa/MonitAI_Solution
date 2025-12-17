@@ -47,7 +47,7 @@ namespace MonitAI.UI
 
             FavoritesList.ItemsSource = Favorites;
             HistoryList.ItemsSource = Histories;
-
+            RootNavigation.Navigate(typeof(Pages.Pattern1Page));
             LoadUserData();
             UpdateTimerDisplay();
         }

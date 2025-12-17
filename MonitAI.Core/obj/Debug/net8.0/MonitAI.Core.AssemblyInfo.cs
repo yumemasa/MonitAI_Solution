@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MonitAI.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f93e99405d3bae40b358f83a821602205211d89")]
 [assembly: System.Reflection.AssemblyProductAttribute("MonitAI.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MonitAI.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

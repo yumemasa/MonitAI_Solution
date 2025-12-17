@@ -1,75 +1,20 @@
-<UserControl x:Class="MonitAI.UI.Pages.Pattern1Page"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="400">
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+﻿<Page x:Class="MonitAI.UI.Pages.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="SettingsPage">
 
-        <!-- Body -->
-        <ScrollViewer Grid.Row="0" Padding="24,16">
-            <StackPanel>
-                <!-- Title -->
-                <TextBlock 
-                    Text="Setup Focus" 
-                    FontSize="28" 
-                    FontWeight="SemiBold"
-                    Margin="0,0,0,8"/>
+    <Grid Margin="30">
+        <StackPanel Spacing="20">
+            <TextBlock Text="設定" FontSize="28" FontWeight="Bold" />
 
-                <!-- Goal Setting Card -->
-                <ui:CardControl Icon="{ui:SymbolIcon Edit24}" Margin="0,0,0,16">
-                    <ui:CardControl.Header>
-                        <TextBlock Text="今日の目標" FontWeight="Medium"/>
-                    </ui:CardControl.Header>
-                    <ui:TextBox 
-                        x:Name="GoalTextBox"
-                        PlaceholderText="例: 数学のレポート作成"
-                        MinWidth="200"
-                        TextChanged="GoalTextBox_TextChanged"/>
-                </ui:CardControl>
-
-                <!-- Time Setting Card -->
-                <ui:CardControl Icon="{ui:SymbolIcon Timer24}" Margin="0,0,0,16">
-                    <ui:CardControl.Header>
-                        <StackPanel>
-                            <TextBlock Text="集中時間" FontWeight="Medium"/>
-                            <TextBlock 
-                                x:Name="TimeDisplayText"
-                                Text="{Binding Value, ElementName=TimeSlider, StringFormat={}{0:0} 分}"
-                                FontSize="12"
-                                Opacity="0.7"/>
-                        </StackPanel>
-                    </ui:CardControl.Header>
-                    <Slider 
-                        x:Name="TimeSlider"
-                        Minimum="15"
-                        Maximum="180"
-                        Value="30"
-                        TickFrequency="15"
-                        IsSnapToTickEnabled="True"
-                        MinWidth="150"/>
-                </ui:CardControl>
-
-            </StackPanel>
-        </ScrollViewer>
-
-        <!-- Footer -->
-        <Border Grid.Row="1" Padding="24,16">
-            <ui:Button 
-                x:Name="StartButton"
-                Content="集中を開始"
-                Icon="{ui:SymbolIcon Play24}"
-                Appearance="Primary"
-                HorizontalAlignment="Stretch"
-                IsEnabled="False"
-                Click="StartButton_Click"/>
-        </Border>
+            <ui:CardExpander Header="Gemini API設定" IsExpanded="True" Icon="{ui:SymbolIcon Key24}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="API Key:" />
+                    <PasswordBox x:Name="ApiKeyBox" />
+                    <Button Content="保存" Click="SaveButton_Click" />
+                </StackPanel>
+            </ui:CardExpander>
+        </StackPanel>
     </Grid>
-</UserControl>
+</Page>

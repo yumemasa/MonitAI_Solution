@@ -1,0 +1,18 @@
+{
+  "Favorites": [
+    {
+      "Title": "\u82F1\u5358\u8A9E\u6697\u8A18",
+      "NgText": "\u30B9\u30DE\u30DB",
+      "Minutes": 30,
+      "Timestamp": null
+    }
+  ],
+  "Histories": [
+    {
+      "Title": "\u8AAD\u66F8",
+      "NgText": null,
+      "Minutes": 45,
+      "Timestamp": "\u30B5\u30F3\u30D7\u30EB"
+    }
+  ]
+}
