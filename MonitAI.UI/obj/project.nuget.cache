@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "dgSpecHash": "8F0w1KSr66A=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\it222104\\source\\repos\\MonitAI_Solution\\MonitAI.UI\\MonitAI.UI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\it222104\\.nuget\\packages\\wpf.ui\\3.4.2.7\\wpf.ui.3.4.2.7.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "パッケージ 'WPF.UI 3.4.2.7' はプロジェクトのターゲット フレームワーク 'net8.0-windows7.0' ではなく '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' を使用して復元されました。このパッケージは、使用しているプロジェクトとの完全な互換性がない可能性があります。",
+      "projectPath": "C:\\Users\\it222104\\source\\repos\\MonitAI_Solution\\MonitAI.UI\\MonitAI.UI.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\it222104\\source\\repos\\MonitAI_Solution\\MonitAI.UI\\MonitAI.UI.csproj",
+      "libraryId": "WPF.UI",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    }
+  ]
+}

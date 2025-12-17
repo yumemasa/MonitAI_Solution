@@ -1,0 +1,2 @@
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\obj\Debug\net8.0-windows\MonitAI.UI.csproj.AssemblyReference.cache
+C:\Users\it222104\source\repos\MonitAI_Solution\MonitAI.UI\obj\Debug\net8.0-windows\MonitAI.UI_MarkupCompile.cache
